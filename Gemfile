@@ -6,7 +6,7 @@ gem "json"
 gem "addressable"
 
 group :development do
-  gem "rspec"
+  gem "rspec", "~> 2.10.0"
   gem "bundler"
   gem "jeweler"
   gem "webmock"
