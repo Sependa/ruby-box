@@ -51,7 +51,7 @@ describe RubyBox::File do
       file.name = 'Funky Monkey.jpg'
       file.description = 'a new description'
       file.name.should == 'Funky Monkey.jpg'
-      file.description.should == 'a new description'    
+      file.description.should == 'a new description'
     end
 
     it 'should not update files raw_item hash for keys not in update_fields' do
@@ -63,11 +63,13 @@ describe RubyBox::File do
     end
 
     it 'should make request with appropriate update hash when update called' do
-      RubyBox::Session.any_instance.stub(:request) do |uri, request|
+      session = RubyBox::Session.new
+
+      expect(session).to receive(:request) do |uri, request|
         data = JSON.parse(request.body)
         data['description'].should == 'a new description'
       end
-      session = RubyBox::Session.new
+
       file = RubyBox::File.new(session, @full_file)
       file.description = 'a new description'
       file.update

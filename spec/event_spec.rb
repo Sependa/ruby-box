@@ -14,8 +14,8 @@ describe RubyBox::EventResponse do
 
   it 'returns an EventResponse with a chunk_size and next_stream_position' do
     eresp = @client.event_response
-    eresp.instance_of?(RubyBox::EventResponse).should be_true
-    eresp.events.instance_of?(Array).should be_true
+    eresp.instance_of?(RubyBox::EventResponse).should be_truthy
+    eresp.events.instance_of?(Array).should be_truthy
     eresp.chunk_size.should eq(@events['chunk_size'])
     eresp.events.length.should eq(@events['chunk_size'])
     eresp.next_stream_position.should eq(@events['next_stream_position'])
@@ -33,7 +33,7 @@ describe RubyBox::EventResponse do
     end
 
     it 'should return Event objects in the event response' do
-      @event.instance_of?(RubyBox::Event).should be_true
+      @event.instance_of?(RubyBox::Event).should be_truthy
     end
 
     it 'should return an #event_id' do
@@ -41,7 +41,7 @@ describe RubyBox::EventResponse do
     end
 
     it 'should return a User for #created_by' do
-      @event.created_by.instance_of?(RubyBox::User).should be_true
+      @event.created_by.instance_of?(RubyBox::User).should be_truthy
     end
 
     it 'should return an #event_type' do
@@ -53,7 +53,7 @@ describe RubyBox::EventResponse do
     end
 
     it 'should return an instantiated #source' do
-      @event.source.instance_of?(RubyBox::Folder).should be_true
+      @event.source.instance_of?(RubyBox::Folder).should be_truthy
     end
 
   end

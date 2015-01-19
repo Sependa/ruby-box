@@ -34,7 +34,7 @@ describe RubyBox::Folder do
     it "compares name in a case insensitive manner" do
       items = [
         JSON.parse('{    "total_count": 4,    "entries": [        {            "type": "folder",            "id": "409047867",            "sequence_id": "1",            "etag": "1",            "name": "Here\'s your folder"        },        {            "type": "file",            "id": "409042867",            "sequence_id": "1",            "etag": "1",            "name": "A choice file"        }    ],    "offset": "0",    "limit": "2"}'),
-        JSON.parse('{    "total_count": 4,    "entries": [        {            "type": "folder",            "id": "409047868",            "sequence_id": "1",            "etag": "1",            "name": "Here\'s another folder"        },        {            "type": "file",            "id": "409042810",            "sequence_id": "1",            "etag": "1",            "name": "A choice file"        }    ],    "offset": "2",    "limit": "2"}')  
+        JSON.parse('{    "total_count": 4,    "entries": [        {            "type": "folder",            "id": "409047868",            "sequence_id": "1",            "etag": "1",            "name": "Here\'s another folder"        },        {            "type": "file",            "id": "409042810",            "sequence_id": "1",            "etag": "1",            "name": "A choice file"        }    ],    "offset": "2",    "limit": "2"}')
       ]
 
       RubyBox::Session.any_instance.stub(:request) { items.pop }
@@ -96,7 +96,7 @@ describe RubyBox::Folder do
     it "should allow you to filter files by name" do
       items = [
         JSON.parse('{    "total_count": 4,    "entries": [        {            "type": "folder",            "id": "409047867",            "sequence_id": "1",            "etag": "1",            "name": "Here\'s your folder"        },        {            "type": "file",            "id": "409042867",            "sequence_id": "1",            "etag": "1",            "name": "A choice file"        }    ],    "offset": "0",    "limit": "2"}'),
-        JSON.parse('{    "total_count": 4,    "entries": [        {            "type": "folder",            "id": "409047868",            "sequence_id": "1",            "etag": "1",            "name": "Here\'s another folder"        },        {            "type": "file",            "id": "409042810",            "sequence_id": "1",            "etag": "1",            "name": "A choice file"        }    ],    "offset": "2",    "limit": "2"}')  
+        JSON.parse('{    "total_count": 4,    "entries": [        {            "type": "folder",            "id": "409047868",            "sequence_id": "1",            "etag": "1",            "name": "Here\'s another folder"        },        {            "type": "file",            "id": "409042810",            "sequence_id": "1",            "etag": "1",            "name": "A choice file"        }    ],    "offset": "2",    "limit": "2"}')
       ]
 
       RubyBox::Session.any_instance.stub(:request) { items.pop }
@@ -108,7 +108,7 @@ describe RubyBox::Folder do
 
       items = [
         JSON.parse('{    "total_count": 4,    "entries": [        {            "type": "folder",            "id": "409047867",            "sequence_id": "1",            "etag": "1",            "name": "Here\'s your folder"        },        {            "type": "file",            "id": "409042867",            "sequence_id": "1",            "etag": "1",            "name": "A choice file"        }    ],    "offset": "0",    "limit": "2"}'),
-        JSON.parse('{    "total_count": 4,    "entries": [        {            "type": "folder",            "id": "409047868",            "sequence_id": "1",            "etag": "1",            "name": "Here\'s another folder"        },        {            "type": "file",            "id": "409042810",            "sequence_id": "1",            "etag": "1",            "name": "A choice file"        }    ],    "offset": "2",    "limit": "2"}')  
+        JSON.parse('{    "total_count": 4,    "entries": [        {            "type": "folder",            "id": "409047868",            "sequence_id": "1",            "etag": "1",            "name": "Here\'s another folder"        },        {            "type": "file",            "id": "409042810",            "sequence_id": "1",            "etag": "1",            "name": "A choice file"        }    ],    "offset": "2",    "limit": "2"}')
       ]
 
       # should return no files.
@@ -140,33 +140,33 @@ describe RubyBox::Folder do
   context '#copy_to' do
     let(:source_folder) { RubyBox::Folder.new(@session, {'id' => 1}) }
     let(:destination) { RubyBox::Folder.new(@session, {'id' => 100}) }
-    let(:last_request) { JSON.parse(@request.body) }
-    let(:last_uri) { @uri.to_s }
-
-    before(:each) do
-      @session.stub(:request).with do |uri, request, _, _|
-        @uri, @request = uri, request
-      end
-    end
 
     it 'uses itself for the copy uri' do
+      expect(@session).to receive(:request) do |uri, _|
+        expect(uri.to_s).to match(/folders\/#{source_folder.id}\/copy/)
+      end
       source_folder.copy_to destination
-      last_uri.should match /folders\/#{source_folder.id}\/copy/
     end
 
     it 'uses the destination as the parent' do
+      expect(@session).to receive(:request) do |_, response|
+        expect(JSON.parse(response.body)['parent']['id']).to eq(destination.id)
+      end
       source_folder.copy_to destination
-      last_request['parent']['id'].should eq(destination.id)
     end
 
     it 'uses the source as the name by default' do
+      expect(@session).to receive(:request) do |_, response|
+        expect(JSON.parse(response.body)).not_to have_key('name')
+      end
       source_folder.copy_to destination
-      last_request.should_not have_key 'name'
     end
 
     it 'can provide a new name if desired' do
+      expect(@session).to receive(:request) do |_, response|
+        expect(JSON.parse(response.body)['name']).to eq('renamed-folder')
+      end
       source_folder.copy_to destination, 'renamed-folder'
-      last_request['name'].should eq('renamed-folder')
     end
 
     it 'returns the newly created folder' do
