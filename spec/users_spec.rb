@@ -14,11 +14,11 @@ describe '/users' do
 
   it 'should return a list of all users in the enterprise' do
     users  = @client.users
-    users.instance_of?(Array).should be_truthy
+    expect(users.instance_of?(Array)).to eq(true)
   end
 
   it 'should return a list of all users in the enterprise as a user object' do
     users  = @client.users
-    users.first.instance_of?(RubyBox::User).should be_truthy
+    expect(users.first.instance_of?(RubyBox::User)).to eq(true)
   end
 end

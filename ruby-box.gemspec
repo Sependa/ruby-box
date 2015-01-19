@@ -65,37 +65,13 @@ Gem::Specification.new do |s|
   s.rubygems_version = "2.2.2"
   s.summary = "ruby gem for box.com 2.0 api"
 
-  if s.respond_to? :specification_version then
-    s.specification_version = 4
-
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<multipart-post>, [">= 0"])
-      s.add_runtime_dependency(%q<oauth2>, [">= 0"])
-      s.add_runtime_dependency(%q<json>, [">= 0"])
-      s.add_runtime_dependency(%q<addressable>, [">= 0"])
-      s.add_development_dependency(%q<rspec>, [">= 0"])
-      s.add_development_dependency(%q<bundler>, [">= 0"])
-      s.add_development_dependency(%q<jeweler>, [">= 0"])
-      s.add_development_dependency(%q<webmock>, [">= 0"])
-    else
-      s.add_dependency(%q<multipart-post>, [">= 0"])
-      s.add_dependency(%q<oauth2>, [">= 0"])
-      s.add_dependency(%q<json>, [">= 0"])
-      s.add_dependency(%q<addressable>, [">= 0"])
-      s.add_dependency(%q<rspec>, [">= 0"])
-      s.add_dependency(%q<bundler>, [">= 0"])
-      s.add_dependency(%q<jeweler>, [">= 0"])
-      s.add_dependency(%q<webmock>, [">= 0"])
-    end
-  else
-    s.add_dependency(%q<multipart-post>, [">= 0"])
-    s.add_dependency(%q<oauth2>, [">= 0"])
-    s.add_dependency(%q<json>, [">= 0"])
-    s.add_dependency(%q<addressable>, [">= 0"])
-    s.add_dependency(%q<rspec>, [">= 0"])
-    s.add_dependency(%q<bundler>, [">= 0"])
-    s.add_dependency(%q<jeweler>, [">= 0"])
-    s.add_dependency(%q<webmock>, [">= 0"])
-  end
+  s.add_runtime_dependency(%q<multipart-post>, [">= 0"])
+  s.add_runtime_dependency(%q<oauth2>, [">= 0"])
+  s.add_runtime_dependency(%q<json>, [">= 0"])
+  s.add_runtime_dependency(%q<addressable>, [">= 0"])
+  s.add_development_dependency('rspec', '~> 3.1.0')
+  s.add_development_dependency('guard-rspec', '~> 4.5.0')
+  s.add_development_dependency(%q<bundler>, [">= 0"])
+  s.add_development_dependency(%q<jeweler>, [">= 0"])
+  s.add_development_dependency(%q<webmock>, [">= 0"])
 end
-

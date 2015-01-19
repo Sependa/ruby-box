@@ -14,7 +14,6 @@ describe '/users/me' do
 
   it 'should return the currently logged in User' do
     me = @client.me
-    me.instance_of?(RubyBox::User).should be_truthy
+    expect(me.instance_of?(RubyBox::User)).to eq(true)
   end
-
 end

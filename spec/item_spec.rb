@@ -11,21 +11,21 @@ describe RubyBox::Item do
   end
 
   describe '#factory' do
-    
+
     it 'creates an object from a web_link hash' do
       web_link = RubyBox::Item.factory(@session, {
         'type' => 'web_link'
       })
-      web_link.type.should == 'web_link'
-      web_link.instance_of?(RubyBox::WebLink).should == true
+      expect(web_link.type).to eq('web_link')
+      expect(web_link.instance_of?(RubyBox::WebLink)).to eq(true)
     end
 
     it 'defaults to item object if unknown type' do
       banana = RubyBox::Item.factory(@session, {
         'type' => 'banana'
       })
-      banana.type.should == 'banana'
-      banana.instance_of?(RubyBox::Item).should == true
+      expect(banana.type).to eq('banana')
+      expect(banana.instance_of?(RubyBox::Item)).to eq(true)
     end
   end
 end

@@ -14,16 +14,16 @@ describe RubyBox::EventResponse do
 
   it 'returns an EventResponse with a chunk_size and next_stream_position' do
     eresp = @client.event_response
-    eresp.instance_of?(RubyBox::EventResponse).should be_truthy
-    eresp.events.instance_of?(Array).should be_truthy
-    eresp.chunk_size.should eq(@events['chunk_size'])
-    eresp.events.length.should eq(@events['chunk_size'])
-    eresp.next_stream_position.should eq(@events['next_stream_position'])
+    expect(eresp.instance_of?(RubyBox::EventResponse)).to eq(true)
+    expect(eresp.events.instance_of?(Array)).to eq(true)
+    expect(eresp.chunk_size).to eq(@events['chunk_size'])
+    expect(eresp.events.length).to eq(@events['chunk_size'])
+    expect(eresp.next_stream_position).to eq(@events['next_stream_position'])
   end
 
   it '#fmt_events_args should return a properly formatted URL' do
-    @client.send(:fmt_events_args, 0, :all, 100).should eql("stream_position=0&stream_type=all&limit=100")
-    @client.send(:fmt_events_args, 'now', :changes, 55).should eql("stream_position=now&stream_type=changes&limit=55")
+    expect(@client.send(:fmt_events_args, 0, :all, 100)).to eql("stream_position=0&stream_type=all&limit=100")
+    expect(@client.send(:fmt_events_args, 'now', :changes, 55)).to eql("stream_position=now&stream_type=changes&limit=55")
   end
 
   describe '#event_response' do
@@ -33,30 +33,27 @@ describe RubyBox::EventResponse do
     end
 
     it 'should return Event objects in the event response' do
-      @event.instance_of?(RubyBox::Event).should be_truthy
+      expect(@event.instance_of?(RubyBox::Event)).to eq(true)
     end
 
     it 'should return an #event_id' do
-      @event.event_id.should eq(@events['entries'][0]['event_id'])
+      expect(@event.event_id).to eq(@events['entries'][0]['event_id'])
     end
 
     it 'should return a User for #created_by' do
-      @event.created_by.instance_of?(RubyBox::User).should be_truthy
+      expect(@event.created_by.instance_of?(RubyBox::User)).to eq(true)
     end
 
     it 'should return an #event_type' do
-      @event.event_type.should eq(@events['entries'][0]['event_type'])
+      expect(@event.event_type).to eq(@events['entries'][0]['event_type'])
     end
 
     it 'should return a #session_id' do
-      @event.session_id.should eq(@events['entries'][0]['session_id'])
+      expect(@event.session_id).to eq(@events['entries'][0]['session_id'])
     end
 
     it 'should return an instantiated #source' do
-      @event.source.instance_of?(RubyBox::Folder).should be_truthy
+      expect(@event.source.instance_of?(RubyBox::Folder)).to eq(true)
     end
-
   end
-
 end
-

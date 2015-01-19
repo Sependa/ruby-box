@@ -17,17 +17,17 @@ describe RubyBox::Folder do
   end
 
   it "#root returns full root folder object" do
-    RubyBox::Session.any_instance.stub(:request).and_return(@full_folder)
     session = RubyBox::Session.new
+    expect(session).to receive(:request).once.and_return(@full_folder)
     root = RubyBox::Client.new(session).root_folder
-    root.name.should == 'Pictures'
+    expect(root.name).to eq('Pictures')
   end
 
   it "returns iso8601 format keys as a time object" do
-    RubyBox::Session.any_instance.stub(:request).and_return(@full_folder)
     session = RubyBox::Session.new
+    expect(session).to receive(:request).once.and_return(@full_folder)
     root = RubyBox::Client.new(session).root_folder
-    root.created_at.year.should == 2012
+    expect(root.created_at.year).to eq(2012)
   end
 
   describe "#find_by_type" do
@@ -37,60 +37,60 @@ describe RubyBox::Folder do
         JSON.parse('{    "total_count": 4,    "entries": [        {            "type": "folder",            "id": "409047868",            "sequence_id": "1",            "etag": "1",            "name": "Here\'s another folder"        },        {            "type": "file",            "id": "409042810",            "sequence_id": "1",            "etag": "1",            "name": "A choice file"        }    ],    "offset": "2",    "limit": "2"}')
       ]
 
-      RubyBox::Session.any_instance.stub(:request) { items.pop }
       session = RubyBox::Session.new
+      allow(session).to receive(:request) { items.pop }
 
       # should return one file.
       files = RubyBox::Folder.new(session, {'id' => 1}).files('A CHOICE file')
-      files.count.should == 1
+      expect(files.count).to eq(1)
     end
   end
 
   describe '#items' do
     it "should return a folder object for folder items" do
       item = JSON.parse('{    "id": "0000001", "total_count": 1,    "entries": [        {            "type": "folder",            "id": "409047867",            "sequence_id": "1",            "etag": "1",            "name": "Here\'s your folder"        }   ],    "offset": "0",    "limit": "1"}')
-      RubyBox::Session.any_instance.stub(:request).and_return(item)
       session = RubyBox::Session.new
+      expect(session).to receive(:request).and_return(item)
       item = RubyBox::Client.new(session).root_folder.items.first
-      item.kind_of?(RubyBox::Folder).should == true
+      expect(item.kind_of?(RubyBox::Folder)).to be_truthy
     end
 
     it "should return a file object for file items" do
       item = JSON.parse('{    "id": "0000001", "total_count": 1,    "entries": [ {            "type": "file",            "id": "409042867",            "sequence_id": "1",            "etag": "1",            "name": "A choice file"        }   ],    "offset": "0",    "limit": "1"}')
-      RubyBox::Session.any_instance.stub(:request).and_return(item)
       session = RubyBox::Session.new
+      expect(session).to receive(:request).and_return(item)
       item = RubyBox::Client.new(session).root_folder.items.first
-      item.kind_of?(RubyBox::File).should == true
+      expect(item.kind_of?(RubyBox::File)).to be_truthy
     end
 
     it "it should return an iterator that lazy loads all entries" do
-      RubyBox::Session.any_instance.stub(:request) { @items.pop }
       session = RubyBox::Session.new
+      allow(session).to receive(:request) { @items.pop }
       items = RubyBox::Folder.new(session, {'id' => 1}).items(1).to_a
-      items[0].kind_of?(RubyBox::Folder).should == true
-      items[1].kind_of?(RubyBox::File).should == true
+      expect(items[0].kind_of?(RubyBox::Folder)).to eq(true)
+      expect(items[1].kind_of?(RubyBox::File)).to eq(true)
     end
 
     it "should allow a fields parameter to be set" do
-      RubyBox::Session.any_instance.should_receive(:get).with('https://api.box.com/2.0/folders/1/items?limit=100&offset=0&fields=size').and_return({'entries' => []})
       session = RubyBox::Session.new
+      expect(session).to receive(:get).with('https://api.box.com/2.0/folders/1/items?limit=100&offset=0&fields=size').and_return({'entries' => []})
       RubyBox::Folder.new(session, {'id' => 1}).items(100, 0, [:size]).to_a
     end
 
     it "should not have the fields parameter set by default" do
-      RubyBox::Session.any_instance.should_receive(:get).with('https://api.box.com/2.0/folders/1/items?limit=100&offset=0').and_return({'entries' => []})
       session = RubyBox::Session.new
+      expect(session).to receive(:get).with('https://api.box.com/2.0/folders/1/items?limit=100&offset=0').and_return({'entries' => []})
       RubyBox::Folder.new(session, {'id' => 1}).items.to_a
     end
   end
 
   describe '#files' do
     it "should only return items of type file" do
-      RubyBox::Session.any_instance.stub(:request) { @items.pop }
       session = RubyBox::Session.new
+      allow(session).to receive(:request) { @items.pop }
       files = RubyBox::Folder.new(session, {'id' => 1}).files
-      files.count.should == 1
-      files.first.kind_of?(RubyBox::File).should == true
+      expect(files.count).to eq(1)
+      expect(files.first.kind_of?(RubyBox::File)).to eq(true)
     end
 
     it "should allow you to filter files by name" do
@@ -99,12 +99,12 @@ describe RubyBox::Folder do
         JSON.parse('{    "total_count": 4,    "entries": [        {            "type": "folder",            "id": "409047868",            "sequence_id": "1",            "etag": "1",            "name": "Here\'s another folder"        },        {            "type": "file",            "id": "409042810",            "sequence_id": "1",            "etag": "1",            "name": "A choice file"        }    ],    "offset": "2",    "limit": "2"}')
       ]
 
-      RubyBox::Session.any_instance.stub(:request) { items.pop }
       session = RubyBox::Session.new
+      allow(session).to receive(:request) { items.pop }
 
       # should return one file.
       files = RubyBox::Folder.new(session, {'id' => 1}).files('A choice file')
-      files.count.should == 1
+      expect(files.count).to eq(1)
 
       items = [
         JSON.parse('{    "total_count": 4,    "entries": [        {            "type": "folder",            "id": "409047867",            "sequence_id": "1",            "etag": "1",            "name": "Here\'s your folder"        },        {            "type": "file",            "id": "409042867",            "sequence_id": "1",            "etag": "1",            "name": "A choice file"        }    ],    "offset": "0",    "limit": "2"}'),
@@ -113,27 +113,27 @@ describe RubyBox::Folder do
 
       # should return no files.
       files = RubyBox::Folder.new(session, {'id' => 1}).files('foobar')
-      files.count.should == 0
+      expect(files.count).to eq(0)
     end
   end
 
   describe '#discussions' do
     it "should return all the discussions surrounding a folder" do
       item = JSON.parse('{    "id": "0000001", "total_count": 1,    "entries": [ {            "type": "discussion",            "id": "409042867",            "sequence_id": "1",            "etag": "1",            "name": "A choice file"        }   ],    "offset": "0",    "limit": "1"}')
-      RubyBox::Session.any_instance.stub(:request).and_return(item)
       session = RubyBox::Session.new
+      allow(session).to receive(:request).and_return(item)
       item = RubyBox::Client.new(session).root_folder.discussions.first
-      item.kind_of?(RubyBox::Discussion).should == true
+      expect(item.kind_of?(RubyBox::Discussion)).to eq(true)
     end
   end
 
   describe '#folders' do
     it "should only return items of type folder" do
-      RubyBox::Session.any_instance.stub(:request) { @items.pop }
       session = RubyBox::Session.new
+      allow(session).to receive(:request) { @items.pop }
       files = RubyBox::Folder.new(session, {'id' => 1}).folders
-      files.count.should == 1
-      files.first.kind_of?(RubyBox::Folder).should == true
+      expect(files.count).to eq(1)
+      expect(files.first.kind_of?(RubyBox::Folder)).to eq(true)
     end
   end
 
@@ -170,11 +170,11 @@ describe RubyBox::Folder do
     end
 
     it 'returns the newly created folder' do
-      @session.should_receive(:request).and_return('type' => 'folder', 'id' => '123')
+      expect(@session).to receive(:request).and_return('type' => 'folder', 'id' => '123')
       copied_folder = source_folder.copy_to(destination)
 
-      copied_folder.should be_a(RubyBox::Folder)
-      copied_folder.id.should eq("123")
+      expect(copied_folder).to be_a(RubyBox::Folder)
+      expect(copied_folder.id).to eq("123")
     end
   end
 

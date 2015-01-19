@@ -16,50 +16,46 @@ describe RubyBox::File do
 
   it "should use missing_method to expose files fields" do
     file = RubyBox::File.new(@session, @mini_file)
-    file.id.should == '2631999573'
+    expect(file.id).to eq('2631999573')
   end
 
   it "should load all meta information if reload_meta is called" do
-    # request is called once when reload_meta is automatically executed.
-    RubyBox::Session.any_instance.should_receive(:request).once.and_return(@full_file)
     session = RubyBox::Session.new
-
+    expect(session).to receive(:request).once.and_return(@full_file)
     file = RubyBox::File.new(session, @mini_file)
-    file.size.should == 629644
+    expect(file.size).to eq(629644)
   end
 
   describe '#parent' do
     it 'should return parent folder' do
       session = RubyBox::Session.new
       file = RubyBox::File.new(session, @full_file)
-      file.parent.name.should == 'Pictures'
+      expect(file.parent.name).to eq('Pictures')
     end
 
     it 'should reload_meta data if necessary before loading parent' do
-      RubyBox::Session.any_instance.stub(:request).and_return(@full_file)
       session = RubyBox::Session.new
+      expect(session).to receive(:request).once.and_return(@full_file)
       file = RubyBox::File.new(session, @mini_file)
-      file.parent.name.should == 'Pictures'
+      expect(file.parent.name).to eq('Pictures')
     end
   end
 
   describe '#update' do
     it 'should update files raw_item hash if name or description changed' do
-      RubyBox::Session.any_instance.stub(:request).and_return(@full_file)
       session = RubyBox::Session.new
       file = RubyBox::File.new(session, @mini_file)
       file.name = 'Funky Monkey.jpg'
       file.description = 'a new description'
-      file.name.should == 'Funky Monkey.jpg'
-      file.description.should == 'a new description'
+      expect(file.name).to eq('Funky Monkey.jpg')
+      expect(file.description).to eq('a new description')
     end
 
     it 'should not update files raw_item hash for keys not in update_fields' do
-      RubyBox::Session.any_instance.stub(:request).and_return(@full_file)
       session = RubyBox::Session.new
       file = RubyBox::File.new(session, @mini_file)
       file.id = '000'
-      file.id.should == '2631999573'
+      expect(file.id).to eq('2631999573')
     end
 
     it 'should make request with appropriate update hash when update called' do
@@ -67,7 +63,7 @@ describe RubyBox::File do
 
       expect(session).to receive(:request) do |uri, request|
         data = JSON.parse(request.body)
-        data['description'].should == 'a new description'
+        expect(data['description']).to eq('a new description')
       end
 
       file = RubyBox::File.new(session, @full_file)
@@ -78,20 +74,20 @@ describe RubyBox::File do
 
   describe '#put_data' do
     it "should load full meta information if etag not present" do
-      RubyBox::Session.any_instance.should_receive(:request).twice.and_return(@full_file)
       session = RubyBox::Session.new
+      allow(session).to receive(:request).and_return(@full_file)
       file = RubyBox::File.new(session, @mini_file)
-      file.stub(:prepare_upload).and_return('fake data')
+      allow(file).to receive(:prepare_upload).and_return('fake data')
       file.update_content('data')
     end
   end
 
   describe '#comments' do
     it 'should return an array of comment objects' do
-      RubyBox::Session.any_instance.stub(:request).and_return(@comments)
       session = RubyBox::Session.new
+      expect(session).to receive(:request).once.and_return(@comments)
       file = RubyBox::File.new(session, @mini_file)
-      file.comments.first.message.should == 'These tigers are cool!'
+      expect(file.comments.first.message).to eq('These tigers are cool!')
     end
   end
 
@@ -105,7 +101,7 @@ describe RubyBox::File do
       comment = file.create_comment('Hello world!')
 
       # note that this value comes from the fixture.
-      comment.message.should == 'These tigers are cool!'
+      expect(comment.message).to eq('These tigers are cool!')
     end
   end
 

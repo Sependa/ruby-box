@@ -12,8 +12,9 @@ describe RubyBox::Client do
 
   describe '#folder' do
     it "should return root folder as default behavior for paths such as ./" do
-      RubyBox::Client.any_instance.should_receive(:root_folder).exactly(4).times
       client = RubyBox::Client.new(@session)
+      expect(client).to receive(:root_folder).exactly(4).times
+
       client.folder()
       client.folder('.')
       client.folder('./')
@@ -24,17 +25,17 @@ describe RubyBox::Client do
   describe '#split_path' do
     it "returns the appropriate path" do
       client = RubyBox::Client.new(@session)
-      client.split_path('foo/bar').should == ['foo', 'bar']
+      expect(client.split_path('foo/bar')).to eq(['foo', 'bar'])
     end
 
     it "leading / is ignored" do
       client = RubyBox::Client.new(@session)
-      client.split_path('/foo/bar').should == ['foo', 'bar']
+      expect(client.split_path('/foo/bar')).to eq(['foo', 'bar'])
     end
 
     it "trailing / is ignored" do
       client = RubyBox::Client.new(@session)
-      client.split_path('foo/bar/').should == ['foo', 'bar']
+      expect(client.split_path('foo/bar/')).to eq(['foo', 'bar'])
     end
   end
 
@@ -43,22 +44,22 @@ describe RubyBox::Client do
       client = RubyBox::Client.new(@session)
       mock_root_folder = double( Object )
       test_folder = double( Object )
-      mock_root_folder.should_receive(:folders).and_return([test_folder])
-      mock_root_folder.should_not_receive(:create_subfolder)
-      client.should_receive(:root_folder).and_return(mock_root_folder)
+      expect(mock_root_folder).to receive(:folders).and_return([test_folder])
+      expect(mock_root_folder).not_to receive(:create_subfolder)
+      expect(client).to receive(:root_folder).and_return(mock_root_folder)
       result = client.create_folder( '/test0')
-      result.should == test_folder
+      expect(result).to eq(test_folder)
     end
 
     it 'calls folder.create_folder if the folder does not exist' do
       client = RubyBox::Client.new(@session)
       mock_root_folder = double( Object )
       test_folder = double( Object )
-      mock_root_folder.should_receive(:folders).and_return([])
-      mock_root_folder.should_receive(:create_subfolder).and_return(test_folder)
-      client.should_receive(:root_folder).and_return(mock_root_folder)
+      expect(mock_root_folder).to receive(:folders).and_return([])
+      expect(mock_root_folder).to receive(:create_subfolder).and_return(test_folder)
+      expect(client).to receive(:root_folder).and_return(mock_root_folder)
       result = client.create_folder( '/test0')
-      result.should == test_folder
+      expect(result).to eq(test_folder)
     end
   end
 end
